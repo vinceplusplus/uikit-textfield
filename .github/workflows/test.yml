@@ -1,0 +1,44 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore: 
+      - '**.md'
+  pull_request:
+    branches:
+      - main
+    paths-ignore: 
+      - '**.md'
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_13.3.1.app/Contents/Developer
+  
+jobs:
+  test:
+    runs-on:
+      - macos-12
+
+    steps:
+    - name: Check out
+      uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        swift --version
+        swift build
+
+    - name: Test
+      run: |
+        xcodebuild -project AllTests/AllTests.xcodeproj -scheme AllTests test -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13' -enableCodeCoverage YES
+        
+    - name: Test example code
+      run: |
+        xcodebuild -project Examples/Example/Example.xcodeproj -scheme Example test -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13'
+        
+    - name: Upload code coverage
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: |
+        bash <(curl -s https://codecov.io/bash)
