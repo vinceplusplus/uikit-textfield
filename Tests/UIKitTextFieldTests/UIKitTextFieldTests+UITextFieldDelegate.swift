@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import XCTest
 import SwiftUI
 @testable import UIKitTextField
@@ -133,3 +135,5 @@ extension UIKitTextFieldTests {
     XCTAssertEqual(captures.shouldReturn.0, textField)
   }
 }
+
+#endif
