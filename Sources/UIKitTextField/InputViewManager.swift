@@ -2,37 +2,40 @@
 
 import SwiftUI
 
-internal class InputViewManager {
-  let textField: UITextField
-  let hostingController: InputViewContentController
-  let inputView: UIInputView
+internal class InputViewManager<UITextFieldType> where UITextFieldType: UITextFieldProtocol {
+  let textField: UITextFieldType
+  let inputViewContentController: InputViewContentController
   let inputViewContent: UIView
+  let inputViewController: UIInputViewController
+  let inputView: UIInputView
   var lastIntrinsicContentSize: CGSize?
   
-  init<Content>(with textField: UITextField, content: Content) where Content: View {
+  init<Content>(with textField: UITextFieldType, content: Content) where Content: View {
     self.textField = textField
-    hostingController = .init(rootView: .init(content))
     
-    inputViewContent = hostingController.view
+    inputViewContentController = .init(rootView: .init(content))
+    
+    inputViewContent = inputViewContentController.view
     inputViewContent.translatesAutoresizingMaskIntoConstraints = false
-
-    inputView = .init()
+    
+    inputViewController = .init()
+    inputView = inputViewController.inputView!
     inputView.translatesAutoresizingMaskIntoConstraints = false
     inputView.allowsSelfSizing = true
     
-    // NOTE: it seems it only works with `safeAreaLayoutGuide`, without it, the animation of the input
-    //       accessory view won't sync well with bottom edge of the safe area
+    inputViewController.addChild(inputViewContentController)
     inputView.addSubview(inputViewContent)
-    inputViewContent.safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: inputView.safeAreaLayoutGuide.leadingAnchor).isActive = true
-    inputViewContent.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: inputView.safeAreaLayoutGuide.trailingAnchor).isActive = true
-    inputViewContent.safeAreaLayoutGuide.topAnchor.constraint(equalTo: inputView.safeAreaLayoutGuide.topAnchor).isActive = true
-    inputViewContent.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: inputView.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    inputViewContent.leadingAnchor.constraint(equalTo: inputView.leadingAnchor).isActive = true
+    inputViewContent.trailingAnchor.constraint(equalTo: inputView.trailingAnchor).isActive = true
+    inputViewContent.topAnchor.constraint(equalTo: inputView.topAnchor).isActive = true
+    inputViewContent.bottomAnchor.constraint(equalTo: inputView.bottomAnchor).isActive = true
+    inputViewContentController.didMove(toParent: inputViewController)
     
-    hostingController.delegate = self
+    inputViewContentController.delegate = self
   }
   
   func update<Content>(with content: Content) where Content: View {
-    hostingController.rootView = .init(content)
+    inputViewContentController.rootView = .init(content)
   }
 }
 

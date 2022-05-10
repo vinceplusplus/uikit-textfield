@@ -16,7 +16,7 @@ extension UIKitTextFieldTests {
       ViewHosting.expel()
     }
 
-    let textField = try view.inspect().find(UIKitTextField.self).actualView().uiView()
+    let textField = try view.inspect().find(UIKitTextField<BaseUITextField>.self).actualView().uiView()
     XCTAssertEqual(textField.isEnabled, false)
   }
 }

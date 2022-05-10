@@ -39,8 +39,8 @@ public extension UIKitTextField {
     var stretchesHorizontally = true
     var stretchesVertically = false
     
-    var inputViewContent: InputViewContent = .none
-    var inputAccessoryViewContent: InputViewContent = .none
+    var inputViewContent: InputViewContent<UITextFieldType> = .none
+    var inputAccessoryViewContent: InputViewContent<UITextFieldType> = .none
 
     // UITextFieldDelegate
     var shouldBeginEditingHandler: (_ uiTextField: UITextFieldType) -> Bool = { _ in true }
@@ -69,7 +69,7 @@ public extension UIKitTextField {
     // extra configuration
     var configureHandler: (_ uiTextField: UITextFieldType) -> Void = { _ in }
 
-    public init() where UITextFieldType == UITextField {
+    public init() where UITextFieldType == BaseUITextField {
       makeTextFieldHandler = { .init() }
     }
     
@@ -300,13 +300,13 @@ public extension UIKitTextField.Configuration {
     return config
   }
 
-  func inputView(content: InputViewContent) -> Self {
+  func inputView(content: InputViewContent<UITextFieldType>) -> Self {
     var config = self
     config.inputViewContent = content
     return config
   }
   
-  func inputAccessoryView(content: InputViewContent) -> Self {
+  func inputAccessoryView(content: InputViewContent<UITextFieldType>) -> Self {
     var config = self
     config.inputAccessoryViewContent = content
     return config

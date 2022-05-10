@@ -8,8 +8,8 @@ public extension UIKitTextField {
     
     let textField: UITextFieldType
     
-    let inputViewManager: InputViewManager
-    let inputAccessoryViewManager: InputViewManager
+    let inputViewManager: InputViewManager<UITextFieldType>
+    let inputAccessoryViewManager: InputViewManager<UITextFieldType>
     
     var lastForceUpdateCounter: Int = -1
 
@@ -27,20 +27,20 @@ public extension UIKitTextField {
     }
     
     func updateInputView(
-      with inputViewContent: InputViewContent,
-      inputViewManager: InputViewManager,
-      keyPath: ReferenceWritableKeyPath<UITextField, UIView?>
+      with inputViewContent: InputViewContent<UITextFieldType>,
+      inputViewManager: InputViewManager<UITextFieldType>,
+      keyPath: ReferenceWritableKeyPath<UITextFieldProtocol, UIInputViewController?>
     ) {
-      let inputView: UIView?
+      let inputViewController: UIInputViewController?
       if let content = inputViewContent.content {
         inputViewManager.update(with: content(textField))
-        inputView = inputViewManager.inputView
+        inputViewController = inputViewManager.inputViewController
       } else {
         inputViewManager.update(with: EmptyView())
-        inputView = nil
+        inputViewController = nil
       }
-      if textField[keyPath: keyPath] != inputView {
-        textField[keyPath: keyPath] = inputView
+      if textField[keyPath: keyPath] != inputViewController {
+        textField[keyPath: keyPath] = inputViewController
         textField.reloadInputViews()
       }
     }
@@ -113,13 +113,13 @@ public extension UIKitTextField {
       updateInputView(
         with: wrapper.config.inputViewContent,
         inputViewManager: inputViewManager,
-        keyPath: \.inputView
+        keyPath: \.inputViewController
       )
 
       updateInputView(
         with: wrapper.config.inputAccessoryViewContent,
         inputViewManager: inputAccessoryViewManager,
-        keyPath: \.inputAccessoryView
+        keyPath: \.inputAccessoryViewController
       )
 
       updateUITextInputTraits(with: config)

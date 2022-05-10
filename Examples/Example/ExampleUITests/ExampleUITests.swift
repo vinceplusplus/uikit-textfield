@@ -185,15 +185,24 @@ class ExampleUITests: XCTestCase {
     textField.tap()
     
     app.buttons["1"].tap()
+    XCTAssert(app.staticTexts["Preview: 1.0"].exists)
     app.buttons["+"].tap()
+    XCTAssert(app.staticTexts["Preview: nil"].exists)
     app.buttons["2"].tap()
+    XCTAssert(app.staticTexts["Preview: 3.0"].exists)
     app.buttons["*"].tap()
+    XCTAssert(app.staticTexts["Preview: nil"].exists)
     app.buttons["3"].tap()
+    XCTAssert(app.staticTexts["Preview: 7.0"].exists)
     app.buttons["-"].tap()
+    XCTAssert(app.staticTexts["Preview: nil"].exists)
     app.buttons["4"].tap()
+    XCTAssert(app.staticTexts["Preview: 3.0"].exists)
+    XCTAssert(app.staticTexts["Result: "].exists)
     app.buttons["enter"].tap()
     
     XCTAssertEqual(textField.value as? String, "1+2*3-4")
+    XCTAssert(app.staticTexts["Preview: 3.0"].exists)
     XCTAssert(app.staticTexts["Result: 3.0"].exists)
   }
 }

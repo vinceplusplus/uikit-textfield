@@ -2,15 +2,15 @@
 
 import SwiftUI
 
-public struct InputViewContent {
-  let content: ((_ uiTextField: UITextField) -> AnyView)?
+public struct InputViewContent<UITextFieldType> where UITextFieldType: UITextFieldProtocol {
+  let content: ((_ uiTextField: UITextFieldType) -> AnyView)?
   
-  init(content: ((_ uiTextField: UITextField) -> AnyView)?) {
+  init(content: ((_ uiTextField: UITextFieldType) -> AnyView)?) {
     self.content = content
   }
   
   public static func view<Content>(
-    @ViewBuilder content: @escaping (_ uiTextField: UITextField) -> Content
+    @ViewBuilder content: @escaping (_ uiTextField: UITextFieldType) -> Content
   ) -> Self
   where
     Content: View

@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-public struct UIKitTextField<UITextFieldType>: UIViewRepresentable where UITextFieldType: UITextField {
+public struct UIKitTextField<UITextFieldType>: UIViewRepresentable where UITextFieldType: UITextFieldProtocol {
   public typealias UIViewType = UITextFieldType
 
   var config: Configuration

@@ -30,7 +30,7 @@ final class UIKitTextFieldTests: XCTestCase {
       ViewHosting.expel()
     }
     
-    let textField = try view.inspect().find(UIKitTextField.self).actualView().uiView()
+    let textField = try view.inspect().find(UIKitTextField<BaseUITextField>.self).actualView().uiView()
     XCTAssertEqual(textField.text, "1234")
     
     viewModel.text = "12345"
@@ -69,7 +69,7 @@ final class UIKitTextFieldTests: XCTestCase {
       ViewHosting.expel()
     }
 
-    let textField = try view.inspect().find(UIKitTextField.self).actualView().uiView()
+    let textField = try view.inspect().find(UIKitTextField<BaseUITextField>.self).actualView().uiView()
     
     XCTAssertEqual(textField.text, "123")
     
@@ -115,7 +115,7 @@ final class UIKitTextFieldTests: XCTestCase {
       ViewHosting.expel()
     }
 
-    let textField = try view.inspect().find(UIKitTextField.self).actualView().uiView()
+    let textField = try view.inspect().find(UIKitTextField<BaseUITextField>.self).actualView().uiView()
     
     XCTAssertEqual(textField.text, "123")
     
@@ -158,7 +158,7 @@ final class UIKitTextFieldTests: XCTestCase {
       ViewHosting.expel()
     }
 
-    let textField = try view.inspect().find(UIKitTextField.self).actualView().uiView()
+    let textField = try view.inspect().find(UIKitTextField<BaseUITextField>.self).actualView().uiView()
     
     XCTAssertEqual(textField.text, "123")
     
@@ -209,7 +209,7 @@ final class UIKitTextFieldTests: XCTestCase {
       ViewHosting.expel()
     }
 
-    let textField = try view.inspect().find(UIKitTextField.self).actualView().uiView()
+    let textField = try view.inspect().find(UIKitTextField<BaseUITextField>.self).actualView().uiView()
     
     XCTAssertEqual(textField.text, "123")
     
@@ -416,7 +416,7 @@ final class UIKitTextFieldTests: XCTestCase {
     
     wait(for: 0.1)
     
-    let textField = try view.inspect().find(UIKitTextField.self).actualView().uiView()
+    let textField = try view.inspect().find(UIKitTextField<BaseUITextField>.self).actualView().uiView()
     
     XCTAssertEqual(textField.isFirstResponder, false)
     
@@ -440,8 +440,8 @@ final class UIKitTextFieldTests: XCTestCase {
   func testValueFocusState() throws {
     // NOTE: ViewInspector seems to have trouble locating the second text field, instead,
     //       it returns the first one as the second one
-    let textField0 = UITextField()
-    let textField1 = UITextField()
+    let textField0 = BaseUITextField()
+    let textField1 = BaseUITextField()
     
     enum Field {
       case field0
@@ -451,8 +451,8 @@ final class UIKitTextFieldTests: XCTestCase {
       @Published var focusedField: Field?
     }
     struct ContentView: View, Inspectable {
-      let textField0: UITextField
-      let textField1: UITextField
+      let textField0: BaseUITextField
+      let textField1: BaseUITextField
       @ObservedObject var viewModel: ViewModel
       var body: some View {
         return VStack {
@@ -533,7 +533,7 @@ final class UIKitTextFieldTests: XCTestCase {
         }
       }
     }
-    let textField = UITextField()
+    let textField = BaseUITextField()
     let view = UIKitTextField(
       config: .init {
         textField
@@ -584,12 +584,12 @@ final class UIKitTextFieldTests: XCTestCase {
     
     wait(for: 1)
     
-    assertSnapshot(matching: textField.inputView!.layer, as: .image)
-    assertSnapshot(matching: textField.inputAccessoryView!.layer, as: .image)
+    assertSnapshot(matching: textField.inputViewController!.view.layer, as: .image)
+    assertSnapshot(matching: textField.inputAccessoryViewController!.view.layer, as: .image)
   }
   
   func testCustomTextField() throws {
-    class CustomTextField: UITextField {}
+    class CustomTextField: BaseUITextField {}
     
     let customTextField = CustomTextField()
     

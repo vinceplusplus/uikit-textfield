@@ -49,7 +49,7 @@ https://github.com/vinceplusplus/uikit-textfield.git
 
 To install through Swift Package Manager, add the following as package dependency and target dependency respectively
 ```
-.package(url: "https://github.com/vinceplusplus/uikit-textfield.git", from: "1.0")
+.package(url: "https://github.com/vinceplusplus/uikit-textfield.git", from: "2.0")
 ```
 ```
 .product(name: "UIKitTextField", package: "uikit-textfield")
@@ -349,9 +349,9 @@ UIKitTextField(
 Supporting `UITextField.inputView` and `UITextField.inputAccessoryView` by accepting a user defined `SwiftUI` view for each of them
 
 ```swift
-func inputView(content: InputViewContent) -> Self
+func inputView(content: InputViewContent<UITextFieldType>) -> Self
 
-func inputAccessoryView(content: InputViewContent) -> Self
+func inputAccessoryView(content: InputViewContent<UITextFieldType>) -> Self
 ```
 
 ```swift
@@ -432,7 +432,7 @@ A common use case of a `UITextField` subclass is to provide some internal paddin
 example demonstrates some extra leading padding to accomodate even an icon image
 
 ```swift
-class CustomTextField: UITextField {
+class CustomTextField: BaseUITextField {
   let padding = UIEdgeInsets(top: 4, left: 8 + 32 + 8, bottom: 4, right: 8)
   public override func textRect(forBounds bounds: CGRect) -> CGRect {
     super.textRect(forBounds: bounds).inset(by: padding)
@@ -466,6 +466,21 @@ UIKitTextField(
 
 <img alt="custom text field class" src="docs/images/custom-text-field-class.png" width="365">
 
+`UITextFieldType` needs to conform to `UITextFieldProtocol` which is shown below:
+
+```swift
+public protocol UITextFieldProtocol: UITextField {
+  var inputViewController: UIInputViewController? { get set }
+  var inputAccessoryViewController: UIInputViewController? { get set }
+}
+```
+
+Basically, it needs have `inputViewController` and `inputAccessoryViewController` writable so the support 
+for custom input view and custom input accessory view will work
+
+For most use cases, `BaseUITextField`, which provides baseline implementation of `UITextFieldProtocol`, 
+can be subclassed to add more user defined behavior
+
 ### Extra Configuration
 
 ```swift
@@ -476,7 +491,7 @@ If there are configurations that `UIKitTextField` doesn't support out of the box
 The extra configuration will be executed at the end of `updateUIView()` after applying all supported configuration (like data binding, etc)
 
 ```swift
-class PaddedTextField: UITextField {
+class PaddedTextField: BaseUITextField {
   var padding = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8) {
     didSet {
       setNeedsLayout()

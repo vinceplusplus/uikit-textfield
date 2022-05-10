@@ -1,6 +1,7 @@
 import UIKit
+import UIKitTextField
 
-class PaddedTextField: UITextField {
+class PaddedTextField: BaseUITextField {
   var padding = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8) {
     didSet {
       setNeedsLayout()
