@@ -82,23 +82,26 @@ public extension UIKitTextField {
       textField.clearButtonMode = config.clearButtonMode ?? .never
       
       // NOTE: since it would trigger additional events, and state change is not allowed inside update().
-      //       it's cleaner to do outside update() to let all, events be handled in a way to allow state
+      //       it's cleaner to do outside update() to let all events be handled in a way to allow state
       //       change without the use of some `isInsideUpdate` variable
       if let focusControl = config.focusState {
-        if focusControl.isSet() {
-          if !self.textField.isFirstResponder {
-            DispatchQueue.main.async {
-              if !self.textField.isFirstResponder {
-                self.textField.becomeFirstResponder()
-              }
+        func shouldFocus() -> Bool {
+          focusControl.isSet() && !textField.isFirstResponder
+        }
+        func shouldBlur() -> Bool {
+          focusControl.isUnset() && textField.isFirstResponder
+        }
+        
+        if shouldFocus() {
+          DispatchQueue.main.async {
+            if shouldFocus() {
+              self.textField.becomeFirstResponder()
             }
           }
-        } else if focusControl.isUnset() {
-          if self.textField.isFirstResponder {
-            DispatchQueue.main.async {
-              if self.textField.isFirstResponder {
-                self.textField.resignFirstResponder()
-              }
+        } else if shouldBlur() {
+          DispatchQueue.main.async {
+            if shouldBlur() {
+              self.textField.resignFirstResponder()
             }
           }
         }
